@@ -33,7 +33,7 @@ special1(0), special2(0), persistent(p), type_att(ENNEMI), dist(16) {
             im << id;
             image = IMG_Load(("data/images/ennemi/ennemi" + im.str() + ".png").c_str());
             if (id != 70) 
-                SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+                SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
             chargeIm = true;
         }
         x=i; y=j; saveEmpl();

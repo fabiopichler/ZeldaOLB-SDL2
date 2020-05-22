@@ -12,7 +12,7 @@
 #include "Common.h"
 
 Bouclier::Bouclier(SDL_Surface* img, int id) : image(img), type(id) {
-    SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+    SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
     zone = NULL;
 }
 

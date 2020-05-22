@@ -2,9 +2,7 @@ CONFIG += c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-INCLUDEPATH += /usr/include/SDL
-
-LIBS += -lSDL -lSDL_image -lSDL_mixer -lSDL_gfx
+LIBS += -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_gfx
 
 HEADERS += \
     src/Audio.h \

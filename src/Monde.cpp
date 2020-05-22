@@ -12,8 +12,8 @@
 #include <sstream>
 #include <fstream>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_gfxPrimitives.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 #include "Menu.h"
 #include "Texte.h"
@@ -31,13 +31,14 @@ avion(0), ovni(0), ecl1(0), ecl2(0), xecl1(0), xecl2(0) {
         std::ostringstream im;
         im << (i+1);
         image[i] = IMG_Load(("data/images/motifs/image" + im.str() + ".png").c_str());
-        SDL_SetColorKey(image[i],SDL_SRCCOLORKEY,SDL_MapRGB(image[i]->format,0,0,255));
+        SDL_SetColorKey(image[i],SDL_TRUE,SDL_MapRGB(image[i]->format,0,0,255));
     }
     
-    imagetransit = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
+    imagetransit = SDL_CreateRGBSurface(0, 320, 240, 32, 0, 0, 0, 0);
+    imagetransitRenderer = SDL_CreateSoftwareRenderer(imagetransit);
     
     imagelevel = IMG_Load("data/images/menu/level.png");
-    SDL_SetColorKey(imagelevel,SDL_SRCCOLORKEY,SDL_MapRGB(imagelevel->format,0,0,255));
+    SDL_SetColorKey(imagelevel,SDL_TRUE,SDL_MapRGB(imagelevel->format,0,0,255));
     
     imageSpe[0] = IMG_Load("data/images/motifs/fond.png");
     imageSpe[1] = IMG_Load("data/images/motifs/fond2.png");
@@ -49,7 +50,7 @@ avion(0), ovni(0), ecl1(0), ecl2(0), xecl1(0), xecl2(0) {
     imageSpe[7] = IMG_Load("data/images/motifs/ciel.png");
     
     for (int i = 3; i < 8; i++)
-        SDL_SetColorKey(imageSpe[i],SDL_SRCCOLORKEY,SDL_MapRGB(imageSpe[i]->format,0,0,255));
+        SDL_SetColorKey(imageSpe[i],SDL_TRUE,SDL_MapRGB(imageSpe[i]->format,0,0,255));
     
     changeZone(gpJeu->getZone());
     
@@ -58,6 +59,7 @@ avion(0), ovni(0), ecl1(0), ecl2(0), xecl1(0), xecl2(0) {
 
 Monde::~Monde() {
     for (int i = 0; i < 5; i++) SDL_FreeSurface(image[i]);
+    SDL_DestroyRenderer(imagetransitRenderer);
     SDL_FreeSurface(imagetransit);
     SDL_FreeSurface(imagelevel);
     for (int i = 0; i < 8; i++) SDL_FreeSurface(imageSpe[i]);
@@ -3363,12 +3365,12 @@ void Monde::defilTransit() {
         int rayon;
         if (animtransC <=320) rayon = 320-animtransC;
         else rayon=animtransC-330;
-        if (animtransC < 310 || animtransC >= 350) filledEllipseRGBA(imagetransit,
+        if (animtransC < 310 || animtransC >= 350) filledEllipseRGBA(imagetransitRenderer,
                         gpJeu->getJoueur()->getX()-phg[0]+8, 
                         gpJeu->getJoueur()->getY()-phg[1]+16,
                         rayon, rayon*2/3,
                         0, 0, 255, 255);
-        SDL_SetColorKey(imagetransit,SDL_SRCCOLORKEY, SDL_MapRGB(imagetransit->format,0,0,255));
+        SDL_SetColorKey(imagetransit,SDL_TRUE, SDL_MapRGB(imagetransit->format,0,0,255));
         if (animtransC==330) { 
             gpJeu->finZone();
             if (gpJoueur->getTypeAnim()!=TOUCHE && gpJoueur->getTypeAnim()!=MORT)

@@ -11,7 +11,7 @@
 #ifndef __PERSONNAGE_H__
 #define __PERSONNAGE_H__
 
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 #include "ZoneRect.h"
 #include "Common.h"

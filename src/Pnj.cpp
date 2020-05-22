@@ -23,7 +23,7 @@ id(type), message(msg), typePnj(P_SIMPLE), immo(false), typeIA(IA_RANDOM) {
         ostringstream im;
         im << id;
         image = IMG_Load(("data/images/personnage/personnage" + im.str() + ".png").c_str());
-        SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+        SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
         x=i; y=j; saveEmpl(); animmax=1;
         init();
     }

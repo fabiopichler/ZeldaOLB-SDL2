@@ -11,7 +11,7 @@
 #include "Encyclopedie.h"
 
 Encyclopedie::Encyclopedie(Jeu* jeu) : gpJeu(jeu), page(0), gpEnnemi(0) {
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
+    image = SDL_CreateRGBSurface(0, 320, 240, 32, 0, 0, 0, 0);
     imageCadre = IMG_Load("data/images/logos/cadres.png");
     gpEnnemi = new Ennemi(gpJeu, 0, 0, 0, true);
 }

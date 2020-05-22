@@ -16,7 +16,7 @@
 
 class Keyboard {
     public :
-        Keyboard(Jeu* jeu, Carte* carte, Encyclopedie* encycl, SDL_Surface* screen, int m);
+        Keyboard(Jeu* jeu, Carte* carte, Encyclopedie* encycl, SDL_Window* window, int m);
         int gererClavier();
         int getMode();
         void setMode(int i);
@@ -51,7 +51,7 @@ class Keyboard {
         Encyclopedie* gpEncyclopedie;
         int mode;
         int gFullScreen;
-        SDL_Surface* gpScreen;
+        SDL_Window* gpWindow;
         int tmp;
         int tmpx;
         int tmpc;

@@ -501,7 +501,7 @@ void Projectile::changeType(int type) {
             if(vitesse==0){anim=1;max=4;gpJeu->getAudio()->playSound(36);}
             break;
     }
-    if (image != NULL) SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+    if (image != NULL) SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
 }
 
 void Projectile::fin() {

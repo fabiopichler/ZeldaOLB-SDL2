@@ -25,8 +25,8 @@ valjauge2(0), maxjauge2(10), nivjauge2(60), dec(0) {
     imageChiffre = IMG_Load("data/images/statut/chiffres.png");
     imageInventaire = IMG_Load("data/images/statut/inventaire.png");
     
-    SDL_SetColorKey(imageStatut,SDL_SRCCOLORKEY,SDL_MapRGB(imageStatut->format,0,0,255));
-    SDL_SetColorKey(imageChiffre,SDL_SRCCOLORKEY,SDL_MapRGB(imageChiffre->format,0,0,255));
+    SDL_SetColorKey(imageStatut,SDL_TRUE,SDL_MapRGB(imageStatut->format,0,0,255));
+    SDL_SetColorKey(imageChiffre,SDL_TRUE,SDL_MapRGB(imageChiffre->format,0,0,255));
 }
 
 Statut::~Statut() {

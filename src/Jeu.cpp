@@ -26,7 +26,7 @@ menu(false), text(false), vueHorz(0), vueVert(0) {
     phg[1] = 0;
     
     imageObjets = IMG_Load("data/images/objet/objets.png");
-    SDL_SetColorKey(imageObjets,SDL_SRCCOLORKEY,SDL_MapRGB(imageObjets->format,0,0,255));
+    SDL_SetColorKey(imageObjets,SDL_TRUE,SDL_MapRGB(imageObjets->format,0,0,255));
     
     gpProjectile = NULL; gpObjet = NULL; gpSnipe = NULL; gpCaisse = NULL; gpEnnemi = NULL;
     gpPiege = NULL; gpPnj = NULL; gpJoueur = NULL; gpMonde = NULL; gpMenu = NULL;

@@ -81,7 +81,7 @@ rebond(false), element(FEU) {
     }
     
     if (image != NULL) 
-        SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+        SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
     
     lastAnimTime = SDL_GetTicks();
 }

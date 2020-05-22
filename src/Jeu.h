@@ -11,7 +11,7 @@
 #ifndef __JEU_H__
 #define __JEU_H__
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "Audio.h"
 #include "Statut.h"

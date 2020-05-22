@@ -11,7 +11,7 @@
 #ifndef __ENCYCLOPEDIE_H__
 #define __ENCYCLOPEDIE_H__
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "Jeu.h"
 
 class Encyclopedie {

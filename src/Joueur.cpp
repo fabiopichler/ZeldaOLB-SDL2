@@ -8,8 +8,8 @@
 
 */
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "Menu.h"
 #include "Joueur.h"
@@ -30,9 +30,9 @@ glisse(0), vitesse(0), oldxg(0), oldyg(0), immo(false), loader(false), verse(0),
 raplaplat(0), asile(0), gel(0) {
     image = NULL;
     imageSpin = IMG_Load("data/images/link/spin.png");
-    SDL_SetColorKey(imageSpin,SDL_SRCCOLORKEY,SDL_MapRGB(imageSpin->format,0,0,255));
+    SDL_SetColorKey(imageSpin,SDL_TRUE,SDL_MapRGB(imageSpin->format,0,0,255));
     imageObjets = IMG_Load("data/images/link/objets.png");
-    SDL_SetColorKey(imageObjets,SDL_SRCCOLORKEY,SDL_MapRGB(imageObjets->format,0,0,255));
+    SDL_SetColorKey(imageObjets,SDL_TRUE,SDL_MapRGB(imageObjets->format,0,0,255));
     x=152;y=72;w=16;h=24;viemax=6;vie=viemax;magie=magiemax;
     for (int i = 0; i < 29; i++) coeur[i]=0;
     for (int i = 0; i < 5; i++) cristaux[i]=0;
@@ -312,7 +312,7 @@ void Joueur::draw(SDL_Surface* gpScreen) {
     
     if (!getOnilink() && getAvancement()==16) {
         imageTmp = IMG_Load("data/images/ennemi/ennemi75.png");
-        SDL_SetColorKey(imageTmp,SDL_SRCCOLORKEY,SDL_MapRGB(imageTmp->format,0,0,255));
+        SDL_SetColorKey(imageTmp,SDL_TRUE,SDL_MapRGB(imageTmp->format,0,0,255));
     }
     if (getAvancement()>=16 && getAvancement()<62) {
         avancement++; x++;
@@ -726,7 +726,7 @@ void Joueur::setTunique(int t) {
     im << tunique;
     if (oni) image = IMG_Load("data/images/link/onilink.png");
     else image = IMG_Load(("data/images/link/link" + im.str() + ".png").c_str());
-    SDL_SetColorKey(image,SDL_SRCCOLORKEY,SDL_MapRGB(image->format,0,0,255));
+    SDL_SetColorKey(image,SDL_TRUE,SDL_MapRGB(image->format,0,0,255));
 }
 
 void Joueur::setEpee(int e) {
@@ -740,7 +740,7 @@ void Joueur::setEpee(int e) {
         else imageEpee = IMG_Load("data/images/link/epeeOni.png");
     }
     else imageEpee = IMG_Load(("data/images/link/epee" + im.str() + ".png").c_str());
-    SDL_SetColorKey(imageEpee,SDL_SRCCOLORKEY,SDL_MapRGB(imageEpee->format,0,0,255));
+    SDL_SetColorKey(imageEpee,SDL_TRUE,SDL_MapRGB(imageEpee->format,0,0,255));
 }
 
 void Joueur::calculDef() {

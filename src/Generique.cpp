@@ -15,13 +15,13 @@
 Generique::Generique(Jeu* jeu) : gpJeu(jeu), anim(0) {
     imageFin = NULL;
     imageArbre = NULL;
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
+    image = SDL_CreateRGBSurface(0, 320, 240, 32, 0, 0, 0, 0);
     imageTitre = IMG_Load("data/images/logos/titre.png");
-    SDL_SetColorKey(imageTitre,SDL_SRCCOLORKEY,SDL_MapRGB(imageTitre->format,0,0,255));
+    SDL_SetColorKey(imageTitre,SDL_TRUE,SDL_MapRGB(imageTitre->format,0,0,255));
     imageCurseur = IMG_Load("data/images/logos/curseur.png");
-    SDL_SetColorKey(imageCurseur,SDL_SRCCOLORKEY,SDL_MapRGB(imageCurseur->format,0,0,255));
+    SDL_SetColorKey(imageCurseur,SDL_TRUE,SDL_MapRGB(imageCurseur->format,0,0,255));
     imageNiveau = IMG_Load("data/images/logos/niveau.png");
-    SDL_SetColorKey(imageNiveau,SDL_SRCCOLORKEY,SDL_MapRGB(imageNiveau->format,0,0,255));
+    SDL_SetColorKey(imageNiveau,SDL_TRUE,SDL_MapRGB(imageNiveau->format,0,0,255));
     imageFee = IMG_Load("data/images/logos/fee.png");
     imageCadre = IMG_Load("data/images/logos/cadres.png");
     imageFond1 = NULL;
@@ -63,8 +63,8 @@ void Generique::initTitre() {
     dst.x = 0; dst.y = 0; SDL_BlitSurface(fond, NULL, image, &dst);
     SDL_FreeSurface(fond);
     SDL_Surface* logo = IMG_Load("data/images/logos/titre.png");
-    SDL_SetColorKey(logo,SDL_SRCCOLORKEY,SDL_MapRGB(logo->format,0,0,255));
-    logo = SDL_DisplayFormat(logo);
+    SDL_SetColorKey(logo,SDL_TRUE,SDL_MapRGB(logo->format,0,0,255));
+    //logo = SDL_DisplayFormat(logo);
     dst.x = 86; dst.y = 45; SDL_BlitSurface(logo, NULL, image, &dst);
     SDL_FreeSurface(logo);
 }
@@ -117,7 +117,7 @@ void Generique::initSelection() {
     
     //stats :
     SDL_Surface* imageStat = IMG_Load("data/images/statut/statut.png");
-    SDL_SetColorKey(imageStat,SDL_SRCCOLORKEY,SDL_MapRGB(imageStat->format,0,0,255));
+    SDL_SetColorKey(imageStat,SDL_TRUE,SDL_MapRGB(imageStat->format,0,0,255));
     SDL_Surface* inventaire = IMG_Load("data/images/statut/inventaire.png");
     SDL_Surface* objets = IMG_Load("data/images/statut/objets.png");
     
@@ -327,7 +327,7 @@ void Generique::initCharger() {
 void Generique::initIntro() {
     if (imageFond1==NULL) {
         imageFond1 = IMG_Load("data/images/logos/fond1.png");
-        SDL_SetColorKey(imageFond1,SDL_SRCCOLORKEY,SDL_MapRGB(imageFond1->format,0,0,255));}
+        SDL_SetColorKey(imageFond1,SDL_TRUE,SDL_MapRGB(imageFond1->format,0,0,255));}
     if (imageFond2==NULL) imageFond2 = IMG_Load("data/images/logos/fond2.png");
     
     ostringstream oss;
@@ -588,7 +588,7 @@ void Generique::cadre(int x, int y, int w, int h) {
 void Generique::initScore() {
     SDL_FreeSurface(imageArbre);
     imageArbre = IMG_Load("data/images/logos/arbre.png");
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
+    image = SDL_CreateRGBSurface(0, 320, 240, 32, 0, 0, 0, 0);
     
     SDL_Rect dst; 
     

@@ -12,7 +12,7 @@
 #include "Keyboard.h"
 
 Carte::Carte(Jeu* jeu) : gpJeu(jeu), levely(0) {
-    image = SDL_CreateRGBSurface(SDL_HWSURFACE, 320, 240, 32, 0, 0, 0, 0);
+    image = SDL_CreateRGBSurface(0, 320, 240, 32, 0, 0, 0, 0);
 }
 
 Carte::~Carte() {
@@ -40,7 +40,7 @@ void Carte::init() {
             gpJeu->getKeyboard()->setTelep(0); return;}
         
         tmp = IMG_Load("data/images/carte/link.png");
-        SDL_SetColorKey(tmp,SDL_SRCCOLORKEY,SDL_MapRGB(tmp->format,0,0,255));
+        SDL_SetColorKey(tmp,SDL_TRUE,SDL_MapRGB(tmp->format,0,0,255));
         src.w = 14; src.h = 12; src.x = 0; src.y = 0; 
         
         //dst.x = gpJoueur->getX()/18; dst.y = gpJoueur->getY()/18;
@@ -171,7 +171,7 @@ void Carte::initEtage() {
     
     //étage de link
     tmp = IMG_Load("data/images/carte/link.png");
-    SDL_SetColorKey(tmp,SDL_SRCCOLORKEY,SDL_MapRGB(tmp->format,0,0,255));
+    SDL_SetColorKey(tmp,SDL_TRUE,SDL_MapRGB(tmp->format,0,0,255));
     src.h = 12; src.w = 14;src.x = 0;src.y=0;
     dst.x = 25; dst.y = 98-gpJeu->getMonde()->etage()*16;
     SDL_BlitSurface(tmp, &src, image, &dst);
@@ -263,7 +263,7 @@ void Carte::initCarte() {
     //étage de link
     if (gpJeu->getMonde()->etage() == levely && ((zone-15)!=11 || levely==0)) {
         tmp = IMG_Load("data/images/carte/link.png");
-        SDL_SetColorKey(tmp,SDL_SRCCOLORKEY,SDL_MapRGB(tmp->format,0,0,255));
+        SDL_SetColorKey(tmp,SDL_TRUE,SDL_MapRGB(tmp->format,0,0,255));
         src.h = 12; src.w = 14;src.x = 0;src.y=0;
         dst.x = 128+(dx-di)*16+(gpJoueur->getX()/20)-6; 
         dst.y = 48+(dy-dj)*16+(gpJoueur->getY()/15)-7;
@@ -281,7 +281,7 @@ void Carte::initBoussole() {
     Joueur* gpJoueur = gpJeu->getJoueur();
     
     SDL_Surface* tmp = IMG_Load("data/images/carte/boussole.png");
-    SDL_SetColorKey(tmp,SDL_SRCCOLORKEY,SDL_MapRGB(tmp->format,0,0,255));
+    SDL_SetColorKey(tmp,SDL_TRUE,SDL_MapRGB(tmp->format,0,0,255));
     
     switch (zone-15) {
         case 0 :
@@ -950,7 +950,7 @@ void Carte::draw(SDL_Surface* gpScreen) {
         
         
         SDL_Surface* tmp = IMG_Load("data/images/carte/link.png");
-        SDL_SetColorKey(tmp,SDL_SRCCOLORKEY,SDL_MapRGB(tmp->format,0,0,255));
+        SDL_SetColorKey(tmp,SDL_TRUE,SDL_MapRGB(tmp->format,0,0,255));
         src.w = 14; src.h = 12; src.x = 0; src.y = 0; 
         
         int tel = gpJeu->getKeyboard()->getTelep();

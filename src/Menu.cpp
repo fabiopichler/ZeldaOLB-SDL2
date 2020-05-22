@@ -12,8 +12,8 @@
 #include <iostream>
 #include <string>
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include "Menu.h"
 #include "Texte.h"
@@ -30,8 +30,8 @@ Menu::Menu(Jeu* jeu) : gpJeu(jeu), sens(0), val(0), anim(0) {
     imageObjets = IMG_Load("data/images/statut/objets.png");
     imageInventaire = IMG_Load("data/images/statut/inventaire.png");
     
-    SDL_SetColorKey(imageCadre,SDL_SRCCOLORKEY,SDL_MapRGB(imageCadre->format,0,0,255));
-    SDL_SetColorKey(imageCoeur,SDL_SRCCOLORKEY,SDL_MapRGB(imageCoeur->format,0,0,255));
+    SDL_SetColorKey(imageCadre,SDL_TRUE,SDL_MapRGB(imageCadre->format,0,0,255));
+    SDL_SetColorKey(imageCoeur,SDL_TRUE,SDL_MapRGB(imageCoeur->format,0,0,255));
 }
 
 Menu::~Menu() {

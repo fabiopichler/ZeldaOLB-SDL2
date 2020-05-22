@@ -11,7 +11,7 @@
 #ifndef __AUDIO_H__
 #define __AUDIO_H__
 
-#include <SDL/SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 class Audio {
     public :

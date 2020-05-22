@@ -11,7 +11,7 @@
 #ifndef __BOUCLIER_H__
 #define __BOUCLIER_H__
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "ZoneRect.h"
 

@@ -11,8 +11,8 @@
 #ifndef __MONDE_H__
 #define __MONDE_H__
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 class Jeu;
 
@@ -82,6 +82,7 @@ class Monde {
         int transAir[42][32];
         SDL_Surface* image[5]; // image motifs
         SDL_Surface* imagetransit;
+        SDL_Renderer* imagetransitRenderer;
         SDL_Surface* imagelevel;
         SDL_Surface* imageSpe[8]; //image fond, pluie, etc.
         Uint32 lastAnimTime; // date de la dernière anim

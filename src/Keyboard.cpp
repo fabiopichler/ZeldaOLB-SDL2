@@ -10,13 +10,13 @@
 
 #include <iostream>
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "Keyboard.h"
 
-Keyboard::Keyboard(Jeu* jeu, Carte* carte, Encyclopedie* encycl, SDL_Surface* screen, int m) : 
+Keyboard::Keyboard(Jeu* jeu, Carte* carte, Encyclopedie* encycl, SDL_Window *window, int m) :
     gpJeu(jeu), gpCarte(carte), gpEncyclopedie(encycl), mode(m), gFullScreen(1), 
-    gpScreen(screen), tmp(0), tmpx(0), tmpc(0), tmpw(0), tmpt(0), tmpp(0), tmpm(0), tmpo(0), 
+    gpWindow(window), tmp(0), tmpx(0), tmpc(0), tmpw(0), tmpt(0), tmpp(0), tmpm(0), tmpo(0),
     tmptp(0), ligne(0), colonne(0), ligneOption(2), volume(32), volson(32), ligneRecord(3), 
     colonneRecord(0), temps(0), ligneVal(0), intro(0), telep(0) {
     for (int i = 0; i < 3; i++) save[i]=0;
@@ -84,17 +84,16 @@ int Keyboard::gererClavier() {
                 break;
         }
     }
-    keys = SDL_GetKeyState(NULL);
+    keys = const_cast<Uint8*>(SDL_GetKeyboardState(NULL));
     pollKeys(keys);
     
     return 0;
 }
 
 void Keyboard::toggleFullScreen() {
-    gFullScreen = (gFullScreen ? 0 : SDL_FULLSCREEN);
+    gFullScreen = (gFullScreen ? 0 : SDL_WINDOW_FULLSCREEN);
     gFullScreen ? SDL_ShowCursor(SDL_DISABLE) : SDL_ShowCursor(SDL_ENABLE);
-    gpScreen = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE
-                                |SDL_DOUBLEBUF|gFullScreen);   
+    SDL_SetWindowFullscreen(gpWindow, gFullScreen);
 }
 
 int Keyboard::pollKey(SDL_Event event) {
@@ -130,16 +129,16 @@ void Keyboard::pollKeys(Uint8* keys) {
         case 0 :
             gpJoueur = gpJeu->getJoueur();
             
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (gpJoueur->getTypeAnim() == MORT) gpJoueur->revie();
                 else if (!gpJeu->getStop() && !gpJeu->getMenu()) gpJeu->setMenu(true);
                 else if (gpJeu->getMenu()) gpJeu->setMenu(false);
                 else if (gpJeu->getText()) gpJeu->setText(gpJeu->getTexte()->suite());
                 tmp = 1;
             }
-            if ((!keys[SDLK_RETURN] && !gpJeu->getMenu()) || (gpJeu->getMenu() 
-            && !keys[SDLK_RETURN] && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] 
-            && !keys[SDLK_UP] && !keys[SDLK_DOWN])) tmp=0;
+            if ((!keys[SDL_SCANCODE_RETURN] && !gpJeu->getMenu()) || (gpJeu->getMenu()
+            && !keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT]
+            && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN])) tmp=0;
             
             if (gpJeu->getText() && gpJeu->getTexte()->isFinished()) {
                 if(tmpt==0){
@@ -148,7 +147,7 @@ void Keyboard::pollKeys(Uint8* keys) {
                         case 41 : case 76 : case 233 : case 292 : case 300 : 
                         case 310 : case 313 : case 316 : case 318 : case 321 : case 323 : 
                         case 331 : case 333 : case 360 : case 369 :
-                            if (keys[SDLK_LEFT] || keys[SDLK_RIGHT]) {
+                            if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_RIGHT]) {
                                 gpJeu->getAudio()->playSound(3);
                                 gpJeu->getTexte()->changeId(gpJeu->getTexte()->getId()+1);
                             }
@@ -156,7 +155,7 @@ void Keyboard::pollKeys(Uint8* keys) {
                         case 42 : case 77 : case 234 : case 293 : case 301 : 
                         case 311 : case 314 : case 317 : case 319 : case 322 : case 324 : 
                         case 332 : case 334 : case 361 : case 370 :
-                            if (keys[SDLK_LEFT] || keys[SDLK_RIGHT]) {
+                            if (keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_RIGHT]) {
                                 gpJeu->getAudio()->playSound(3);
                                 gpJeu->getTexte()->changeId(gpJeu->getTexte()->getId()-1);
                             }
@@ -172,7 +171,7 @@ void Keyboard::pollKeys(Uint8* keys) {
                             && gpJeu->getTexte()->getId()!=32 && gpJeu->getTexte()->getId()!=35 
                             && gpJeu->getTexte()->getId()!=330 
                             && gpJeu->getTexte()->getId()!=200) {
-                                if (keys[SDLK_DOWN]) {
+                                if (keys[SDL_SCANCODE_DOWN]) {
                                     gpJeu->getAudio()->playSound(3);
                                     gpJeu->getTexte()->changeId(gpJeu->getTexte()->getId()+1);
                                 }
@@ -183,7 +182,7 @@ void Keyboard::pollKeys(Uint8* keys) {
                             && gpJeu->getTexte()->getId()!=30 && gpJeu->getTexte()->getId()!=33 
                             && gpJeu->getTexte()->getId()!=328
                             && gpJeu->getTexte()->getId()!=199) {
-                                if (keys[SDLK_UP]) {
+                                if (keys[SDL_SCANCODE_UP]) {
                                     gpJeu->getAudio()->playSound(3);
                                     gpJeu->getTexte()->changeId(gpJeu->getTexte()->getId()-1);
                                 }
@@ -191,64 +190,64 @@ void Keyboard::pollKeys(Uint8* keys) {
                             break;
                     }
                 }
-                if (!keys[SDLK_RETURN] && !keys[SDLK_RETURN] && !keys[SDLK_LEFT] 
-                && !keys[SDLK_RIGHT] && !keys[SDLK_UP] && !keys[SDLK_DOWN]) tmpt=0;
+                if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_LEFT]
+                && !keys[SDL_SCANCODE_RIGHT] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN]) tmpt=0;
             }
             
             nbdir=0;
-            if (keys[SDLK_UP]) nbdir++;
-            if (keys[SDLK_DOWN]) nbdir++;
-            if (keys[SDLK_LEFT]) nbdir++;
-            if (keys[SDLK_RIGHT]) nbdir++;
+            if (keys[SDL_SCANCODE_UP]) nbdir++;
+            if (keys[SDL_SCANCODE_DOWN]) nbdir++;
+            if (keys[SDL_SCANCODE_LEFT]) nbdir++;
+            if (keys[SDL_SCANCODE_RIGHT]) nbdir++;
             
             int vitesse;
-            if ((keys[SDLK_CAPSLOCK] || keys[SDLK_LSHIFT]) && !gpJeu->getStop() 
+            if ((keys[SDL_SCANCODE_CAPSLOCK] || keys[SDL_SCANCODE_LSHIFT]) && !gpJeu->getStop()
             && gpJoueur->hasObjet(O_BOTTES)) vitesse=4; 
             else vitesse=2;
     
             avance=0;
             
             //marche
-            if (!keys[SDLK_LCTRL] && (
+            if (!keys[SDL_SCANCODE_LCTRL] && (
             gpJoueur->getTypeAnim()==AUCUNE || gpJoueur->getTypeAnim()==MARCHE 
             || gpJoueur->getTypeAnim()==PORTE || gpJoueur->getTypeAnim()==EMMENE
             || gpJoueur->getTypeAnim()==NAGE || gpJoueur->getTypeAnim()==FLOTTE) 
             && !gpJeu->getStop() && !gpJeu->getTransition() && !gpJoueur->getImmo()) {
                 gpJoueur->savePrec();
-                if (keys[SDLK_LEFT]) {
+                if (keys[SDL_SCANCODE_LEFT]) {
                     if(!gpJoueur->getCharge() 
-                    && (!keys[SDLK_UP] || gpJoueur->getDirection()!=N) 
-                    && (!keys[SDLK_DOWN] || gpJoueur->getDirection()!=S))
+                    && (!keys[SDL_SCANCODE_UP] || gpJoueur->getDirection()!=N)
+                    && (!keys[SDL_SCANCODE_DOWN] || gpJoueur->getDirection()!=S))
                         gpJoueur->setDirection(O);
                     if (gpJoueur->getX()%4==2) vit=2; else vit = vitesse;
                     //gpJeu->moveJoueurX(-vit, nbdir);
                     gpJoueur->moveX(-vit, nbdir);
                     avance = 1;
                 }
-                if (keys[SDLK_RIGHT]) {
+                if (keys[SDL_SCANCODE_RIGHT]) {
                     if(!gpJoueur->getCharge() 
-                    && (!keys[SDLK_UP] || gpJoueur->getDirection()!=N) 
-                    && (!keys[SDLK_DOWN] || gpJoueur->getDirection()!=S))
+                    && (!keys[SDL_SCANCODE_UP] || gpJoueur->getDirection()!=N)
+                    && (!keys[SDL_SCANCODE_DOWN] || gpJoueur->getDirection()!=S))
                         gpJoueur->setDirection(E);
                     if (gpJoueur->getX()%4==2) vit=2; else vit = vitesse;
                     //gpJeu->moveJoueurX(vit, nbdir);
                     gpJoueur->moveX(vit, nbdir);
                     avance=1;
                 }
-                if (keys[SDLK_UP]) {
+                if (keys[SDL_SCANCODE_UP]) {
                     if(!gpJoueur->getCharge()
-                    && (!keys[SDLK_LEFT] || gpJoueur->getDirection()!=O) 
-                    && (!keys[SDLK_RIGHT] || gpJoueur->getDirection()!=E))
+                    && (!keys[SDL_SCANCODE_LEFT] || gpJoueur->getDirection()!=O)
+                    && (!keys[SDL_SCANCODE_RIGHT] || gpJoueur->getDirection()!=E))
                         gpJoueur->setDirection(N);
                     if (gpJoueur->getY()%4!=0) vit=2; else vit = vitesse;
                     //gpJeu->moveJoueurY(-vit, nbdir);
                     gpJoueur->moveY(-vit, nbdir);
                     avance=1;
                 }
-                if (keys[SDLK_DOWN]) {
+                if (keys[SDL_SCANCODE_DOWN]) {
                     if(!gpJoueur->getCharge()
-                    && (!keys[SDLK_LEFT] || gpJoueur->getDirection()!=O) 
-                    && (!keys[SDLK_RIGHT] || gpJoueur->getDirection()!=E))
+                    && (!keys[SDL_SCANCODE_LEFT] || gpJoueur->getDirection()!=O)
+                    && (!keys[SDL_SCANCODE_RIGHT] || gpJoueur->getDirection()!=E))
                         gpJoueur->setDirection(S);
                     if (gpJoueur->getY()%4!=0) vit=2; else vit = vitesse;
                     //gpJeu->moveJoueurY(vit, nbdir);
@@ -272,14 +271,14 @@ void Keyboard::pollKeys(Uint8* keys) {
                     else gpJeu->setVueVert(0);
                 }
             }
-            if (keys[SDLK_LCTRL] && !gpJoueur->getImmo()) {
-                if (keys[SDLK_LEFT] && gpJeu->getVueHorz()>-64)
+            if (keys[SDL_SCANCODE_LCTRL] && !gpJoueur->getImmo()) {
+                if (keys[SDL_SCANCODE_LEFT] && gpJeu->getVueHorz()>-64)
                     gpJeu->setVueHorz(gpJeu->getVueHorz()-2);
-                if (keys[SDLK_RIGHT] && gpJeu->getVueHorz()<64)
+                if (keys[SDL_SCANCODE_RIGHT] && gpJeu->getVueHorz()<64)
                     gpJeu->setVueHorz(gpJeu->getVueHorz()+2);
-                if (keys[SDLK_UP] && gpJeu->getVueVert()>-64)
+                if (keys[SDL_SCANCODE_UP] && gpJeu->getVueVert()>-64)
                     gpJeu->setVueVert(gpJeu->getVueVert()-2);
-                if (keys[SDLK_DOWN] && gpJeu->getVueVert()<64)
+                if (keys[SDL_SCANCODE_DOWN] && gpJeu->getVueVert()<64)
                     gpJeu->setVueVert(gpJeu->getVueVert()+2);
             }
             
@@ -303,14 +302,14 @@ void Keyboard::pollKeys(Uint8* keys) {
             if ((gpJoueur->getTypeAnim()==AUCUNE || gpJoueur->getTypeAnim()==MARCHE) 
             && !gpJoueur->getCharge() && gpJoueur->getEpee() && !gpJeu->getStop()
             && !gpJoueur->isLapin() && !gpJoueur->getImmo()) {
-                if ((keys[SDLK_z] || keys[SDLK_w]) && !tmpw) {
+                if ((keys[SDL_SCANCODE_Z] || keys[SDL_SCANCODE_W]) && !tmpw) {
                     gpJoueur->setTypeAnim(EPEE);
                     gpJoueur->chargeSpin();
                     tmpw=1;
                 }
-                if (!keys[SDLK_z] && !keys[SDLK_w] && tmpw) tmpw=0;
+                if (!keys[SDL_SCANCODE_Z] && !keys[SDL_SCANCODE_W] && tmpw) tmpw=0;
             }
-            if (!keys[SDLK_z] && !keys[SDLK_w] && gpJoueur->getCharge() && !gpJeu->getStop() 
+            if (!keys[SDL_SCANCODE_Z] && !keys[SDL_SCANCODE_W] && gpJoueur->getCharge() && !gpJeu->getStop()
             && !gpJoueur->isLapin()) {
                 if (gpJoueur->getCharge() >= 20) gpJoueur->setTypeAnim(SPIN);
                 gpJoueur->dechargeSpin();
@@ -320,28 +319,28 @@ void Keyboard::pollKeys(Uint8* keys) {
             //curseur menu
             if (gpJeu->getMenu() && !gpJoueur->getOni() &&
             (gpJoueur->getTypeAnim()<4 || gpJoueur->getTypeAnim()>20) && tmp==0) {
-                if (keys[SDLK_LEFT]) {
+                if (keys[SDL_SCANCODE_LEFT]) {
                     int obj = gpJoueur->getObjet();
                     if (obj%3 == 0) gpJoueur->setObjet(obj+2);
                     else gpJoueur->setObjet(obj-1);
                     gpJeu->getAudio()->playSound(3);
                     tmp=1;
                 }
-                if (keys[SDLK_RIGHT]) {
+                if (keys[SDL_SCANCODE_RIGHT]) {
                     int obj = gpJoueur->getObjet();
                     if (obj%3 == 2) gpJoueur->setObjet(obj-2);
                     else gpJoueur->setObjet(obj+1);
                     gpJeu->getAudio()->playSound(3);
                     tmp=1;
                 }
-                if (keys[SDLK_UP]) {
+                if (keys[SDL_SCANCODE_UP]) {
                     int obj = gpJoueur->getObjet();
                     if (obj/3 == 0) gpJoueur->setObjet(obj+9);
                     else gpJoueur->setObjet(obj-3);
                     gpJeu->getAudio()->playSound(3);
                     tmp=1;
                 }
-                if (keys[SDLK_DOWN]) {
+                if (keys[SDL_SCANCODE_DOWN]) {
                     int obj = gpJoueur->getObjet();
                     if (obj/3 == 3) gpJoueur->setObjet(obj-9);
                     else gpJoueur->setObjet(obj+3);
@@ -352,7 +351,7 @@ void Keyboard::pollKeys(Uint8* keys) {
             
             
             
-            if (keys[SDLK_x] && (
+            if (keys[SDL_SCANCODE_X] && (
             gpJoueur->getTypeAnim()==AUCUNE || gpJoueur->getTypeAnim()==MARCHE || 
             (gpJoueur->getObjet()==8 && 
             (gpJoueur->getTypeAnim()==PORTE || gpJoueur->getTypeAnim()==EMMENE))) 
@@ -408,9 +407,9 @@ void Keyboard::pollKeys(Uint8* keys) {
                 }    
             }
             
-            if (!keys[SDLK_x] && tmpx) tmpx=0;
+            if (!keys[SDL_SCANCODE_X] && tmpx) tmpx=0;
             
-            if (keys[SDLK_c] && !tmpc && !gpJoueur->getCharge() && gpJoueur->getVie()>0
+            if (keys[SDL_SCANCODE_C] && !tmpc && !gpJoueur->getCharge() && gpJoueur->getVie()>0
             && !gpJoueur->isLapin() && !gpJeu->getStop() && !gpJoueur->getImmo()) {
                 if (gpJoueur->getTypeAnim()==AUCUNE || gpJoueur->getTypeAnim()==MARCHE)
                     gpJeu->ramasse();
@@ -418,15 +417,15 @@ void Keyboard::pollKeys(Uint8* keys) {
                     gpJoueur->setTypeAnim(LANCE);
             }
             
-            if (!keys[SDLK_c] && tmpc) tmpc=0;
+            if (!keys[SDL_SCANCODE_C] && tmpc) tmpc=0;
             
-            if (keys[SDLK_SPACE] && !gpJeu->getStop() && gpJoueur->getVie() && 
+            if (keys[SDL_SCANCODE_SPACE] && !gpJeu->getStop() && gpJoueur->getVie() &&
             (gpJoueur->getTypeAnim()==AUCUNE || gpJoueur->getTypeAnim()==MARCHE) 
              && !gpJoueur->getImmo()) {
                 gpJeu->lire();
             }
             
-            if (keys[SDLK_p] && (gpJoueur->hasObjet(O_CARTE) || gpJeu->isDonjon()) && 
+            if (keys[SDL_SCANCODE_P] && (gpJoueur->hasObjet(O_CARTE) || gpJeu->isDonjon()) &&
             (gpJeu->isDehors() || gpJeu->isDonjon())
             && !gpJeu->getStop() && gpJoueur->getVie()>0 && !tmpp) {
                 mode = 12;
@@ -435,9 +434,9 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmpp=1;
             }
             
-            if (!keys[SDLK_p] && tmpp) tmpp=0;
+            if (!keys[SDL_SCANCODE_P] && tmpp) tmpp=0;
             
-            if ((keys[SDLK_m] || keys[SDLK_SEMICOLON]) && gpJoueur->hasObjet(O_ENCYCL)
+            if ((keys[SDL_SCANCODE_M] || keys[SDL_SCANCODE_SEMICOLON]) && gpJoueur->hasObjet(O_ENCYCL)
             && !gpJeu->getStop() && gpJoueur->getVie()>0 && !tmpm) {
                 mode = 13;
                 gpJeu->getAudio()->playSound(1);
@@ -446,9 +445,9 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmpm=1;
             }
             
-            if (!(keys[SDLK_m] || keys[SDLK_SEMICOLON]) && tmpm) tmpm=0;
+            if (!(keys[SDL_SCANCODE_M] || keys[SDL_SCANCODE_SEMICOLON]) && tmpm) tmpm=0;
             
-            if (keys[SDLK_o] && gpJoueur->hasObjet(O_MASQUE)==2 && !gpJoueur->isLapin() && !tmpo
+            if (keys[SDL_SCANCODE_O] && gpJoueur->hasObjet(O_MASQUE)==2 && !gpJoueur->isLapin() && !tmpo
             && !gpJeu->getStop() && !gpJoueur->getImmo() && gpJoueur->getVie()>0) {
                 if (gpJeu->isVillage(gpJoueur->getX(),gpJoueur->getY())) {
                     gpJeu->ecrit(128); }
@@ -461,10 +460,10 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmpo=1;
             }
             
-            if (!(keys[SDLK_o]) && tmpo) tmpo=0;
+            if (!(keys[SDL_SCANCODE_O]) && tmpo) tmpo=0;
             
             
-            if (keys[SDLK_t] && gpJoueur->getOni() && !gpJoueur->isLapin()
+            if (keys[SDL_SCANCODE_T] && gpJoueur->getOni() && !gpJoueur->isLapin()
             && gpJeu->isDonjon() && !tmptp
             && !gpJeu->getStop() && !gpJoueur->getImmo() && gpJoueur->getVie()>0) {
                 gpJeu->getAudio()->playSound(5);
@@ -474,39 +473,39 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmptp=1;
             }
             
-            if (!(keys[SDLK_t]) && tmptp) tmptp=0;
+            if (!(keys[SDL_SCANCODE_T]) && tmptp) tmptp=0;
             break;
         case 1 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 mode = 2;
                 gpJeu->getGenerique()->initLogo();
                 gpJeu->getAudio()->playSound(1);
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN]) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN]) tmp=0;
             break;
         case 2 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 mode = 3;
                 gpJeu->getGenerique()->initTitre();
                 gpJeu->getAudio()->playSound(1);
                 gpJeu->getAudio()->playMusic(80);
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN]) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN]) tmp=0;
             break;
         case 3 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 mode = 4; colonne=0;
                 gpJeu->getGenerique()->initSelection();
                 gpJeu->getAudio()->playSound(1);
                 gpJeu->getAudio()->playMusic(90);
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN]) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN]) tmp=0;
             break;
         case 4 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (ligne < 3) {
                     if (save[ligne]) {
                         mode = 7; ligneVal=0;
@@ -528,26 +527,26 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmp=1; gpJeu->getAudio()->playSound(1);
             }
             
-            if (keys[SDLK_UP] && !tmp) {
+            if (keys[SDL_SCANCODE_UP] && !tmp) {
                 ligne--; if (ligne<0) ligne=3; tmp=1; 
                 if (ligne!=3) colonne=0;
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_DOWN] && !tmp) {
+            if (keys[SDL_SCANCODE_DOWN] && !tmp) {
                 ligne++; if (ligne>3) ligne=0; tmp=1;
                 if (ligne!=3) colonne=0;
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_LEFT] && !tmp && ligne==3) {
+            if (keys[SDL_SCANCODE_LEFT] && !tmp && ligne==3) {
                 colonne--; if (colonne<0) colonne=1; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_RIGHT] && !tmp && ligne==3) {
+            if (keys[SDL_SCANCODE_RIGHT] && !tmp && ligne==3) {
                 colonne++; if (colonne>1) colonne=0; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] 
-                && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN]
+                && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && tmp) tmp=0;
             break;
         case 6 :
-            if (keys[SDLK_RETURN] && tmp == 0 && ligneOption == 2) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0 && ligneOption == 2) {
                 mode = 4;
                 gpJeu->getGenerique()->initSelection();
                 gpJeu->getAudio()->playSound(2);
@@ -555,20 +554,20 @@ void Keyboard::pollKeys(Uint8* keys) {
                 saveP();
             }
             
-            if (keys[SDLK_UP] && !tmp) {
+            if (keys[SDL_SCANCODE_UP] && !tmp) {
                 ligneOption--; if (ligneOption<0) ligneOption=2; tmp=1; 
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_DOWN] && !tmp) {
+            if (keys[SDL_SCANCODE_DOWN] && !tmp) {
                 ligneOption++; if (ligneOption>2) ligneOption=0; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_LEFT] && !tmp) {
+            if (keys[SDL_SCANCODE_LEFT] && !tmp) {
                 if (ligneOption == 0) {
                     volume-=8; if (volume < 0) volume = 0; tmp=1;
                     gpJeu->getAudio()->setVolume(volume); gpJeu->getAudio()->playSound(3);}
                 if (ligneOption == 1) {
                     volson-=8; if (volson < 0) volson = 0; tmp=1;
                     gpJeu->getAudio()->setVolson(volson); gpJeu->getAudio()->playSound(3);}}
-            if (keys[SDLK_RIGHT] && !tmp) {
+            if (keys[SDL_SCANCODE_RIGHT] && !tmp) {
                 if (ligneOption == 0) {
                     volume+=8; if (volume > 64) volume = 64; tmp=1;
                     gpJeu->getAudio()->setVolume(volume);gpJeu->getAudio()->playSound(3);}
@@ -576,11 +575,11 @@ void Keyboard::pollKeys(Uint8* keys) {
                     volson+=8; if (volson > 64) volson = 64; tmp=1;
                     gpJeu->getAudio()->setVolson(volson);gpJeu->getAudio()->playSound(3);}}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] 
-                && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN]
+                && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && tmp) tmp=0;
             break;
         case 7 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (ligneVal==0) {
                     mode = 0;
                     gpJeu->init(ligne+1);
@@ -597,17 +596,17 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmp = 1;
             }
             
-            if (keys[SDLK_UP] && !tmp) {
+            if (keys[SDL_SCANCODE_UP] && !tmp) {
                 if (--ligneVal<0) ligneVal=2; tmp=1; 
                 gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_DOWN] && !tmp) {
+            if (keys[SDL_SCANCODE_DOWN] && !tmp) {
                 if (++ligneVal>2) ligneVal=0; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN] && tmp) tmp=0;
             break;
         case 8 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 int old;
                 old = gpJeu->getTexte()->getId();
                 if (!gpJeu->getTexte()->suite()) {
@@ -617,10 +616,10 @@ void Keyboard::pollKeys(Uint8* keys) {
                 else if (old != gpJeu->getTexte()->getId()) intro++;
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && tmp) tmp=0;
             break;
         case 9 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (ligneVal==0) {
                     ostringstream oss; oss << (ligne+1);
                     remove(("data/save/olb" + oss.str() + ".dat").c_str());
@@ -634,14 +633,14 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmp = 1;
             }
             
-            if ((keys[SDLK_UP] || keys[SDLK_DOWN]) && !tmp) {
+            if ((keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_DOWN]) && !tmp) {
                 ligneVal ? ligneVal=0 : ligneVal = 1; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN] && tmp) tmp=0;
             break;
         case 10 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (gpJeu->getText()) gpJeu->setText(gpJeu->getTexte()->suite());
                 if (!gpJeu->getText()) {
                     gpJeu->getAudio()->playSound(5);
@@ -651,63 +650,63 @@ void Keyboard::pollKeys(Uint8* keys) {
                 }
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && tmp) tmp=0;
             break;
         case 11 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 gpJeu->setText(gpJeu->getTexte()->suite());
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN]) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN]) tmp=0;
             break;
         case 12 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 0;
                 gpJeu->getAudio()->playSound(2);
                 tmp=1;
             }
             
-            if (keys[SDLK_UP] && !tmp) {
+            if (keys[SDL_SCANCODE_UP] && !tmp) {
                 gpCarte->moveLevel(N);
                 tmp=1;
             }
-            if (keys[SDLK_DOWN] && !tmp) {
+            if (keys[SDL_SCANCODE_DOWN] && !tmp) {
                 gpCarte->moveLevel(S);
                 tmp=1;
             }
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN] && tmp) tmp=0;
             break;
         case 13 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 0;
                 gpJeu->getAudio()->playSound(2);
                 tmp=1;
             }
             
-            if (keys[SDLK_LEFT] && !tmp) {
+            if (keys[SDL_SCANCODE_LEFT] && !tmp) {
                 gpJeu->getAudio()->playSound(3);
                 gpEncyclopedie->moveL();
                 tmp=1;
             }
-            if (keys[SDLK_RIGHT] && !tmp) {
+            if (keys[SDL_SCANCODE_RIGHT] && !tmp) {
                 gpJeu->getAudio()->playSound(3);
                 gpEncyclopedie->moveR();
                 tmp=1;
             }
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && tmp) tmp=0;
             break;
         case 14 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 mode = 2; gpJeu->getAudio()->playSound(1);
                 gpJeu->getGenerique()->initLogo();
                 tmp = 1;
             }
-            if (!keys[SDLK_RETURN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && tmp) tmp=0;
             break;
         case 15 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 if (ligneRecord==3) {
                     if (colonneRecord == 0) {
                         mode = 4;
@@ -728,23 +727,23 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmp = 1;
             }
             
-            if (keys[SDLK_UP] && !tmp) {
+            if (keys[SDL_SCANCODE_UP] && !tmp) {
                 ligneRecord--; if (ligneRecord<0) ligneRecord=3; tmp=1; 
                 colonneRecord=0; gpJeu->getAudio()->playSound(3);}
-            if (keys[SDLK_DOWN] && !tmp) {
+            if (keys[SDL_SCANCODE_DOWN] && !tmp) {
                 ligneRecord++; if (ligneRecord>3) ligneRecord=0; tmp=1;
                 colonneRecord=0; gpJeu->getAudio()->playSound(3);}
             
-            if ((keys[SDLK_LEFT] || keys[SDLK_RIGHT]) && ligneRecord==3 && !tmp) {
+            if ((keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_RIGHT]) && ligneRecord==3 && !tmp) {
                 if (colonneRecord == 0) colonneRecord=1;
                 else colonneRecord=0; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] 
-                && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN]
+                && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT] && tmp) tmp=0;
             break;
         case 16 :
-            if (keys[SDLK_RETURN] && tmp == 0) {
+            if (keys[SDL_SCANCODE_RETURN] && tmp == 0) {
                 mode = 15;
                 if (ligneVal==0) {
                     gpJeu->getAudio()->playSound(2);
@@ -755,89 +754,89 @@ void Keyboard::pollKeys(Uint8* keys) {
                 tmp = 1;
             }
             
-            if ((keys[SDLK_UP] || keys[SDLK_DOWN]) && !tmp) {
+            if ((keys[SDL_SCANCODE_UP] || keys[SDL_SCANCODE_DOWN]) && !tmp) {
                 ligneVal ? ligneVal=0 : ligneVal = 1; tmp=1;
                 gpJeu->getAudio()->playSound(3);}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_UP] && !keys[SDLK_DOWN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_UP] && !keys[SDL_SCANCODE_DOWN] && tmp) tmp=0;
             break;
         case 17 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 0;
                 gpJeu->getAudio()->playSound(2);
                 tmp=1;
             }
-            if (keys[SDLK_RIGHT] && !tmp) {
+            if (keys[SDL_SCANCODE_RIGHT] && !tmp) {
                 mode = 18; gpJeu->getGenerique()->initAide2();
                 gpJeu->getAudio()->playSound(3); tmp=1;}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_RIGHT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_RIGHT] && tmp) tmp=0;
             break;
         case 18 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 0;
                 gpJeu->getAudio()->playSound(2);
                 tmp=1;
             }
-            if (keys[SDLK_LEFT] && !tmp) {
+            if (keys[SDL_SCANCODE_LEFT] && !tmp) {
                 mode = 17; gpJeu->getGenerique()->initAide1();
                 gpJeu->getAudio()->playSound(3); tmp=1;}
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_LEFT] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_LEFT] && tmp) tmp=0;
             break;
         case 19 :
         case 20 :
         case 21 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 15; gpJeu->getGenerique()->initRecord();
                 gpJeu->getAudio()->playSound(2);
                 tmp=1;
             }
-            if (!keys[SDLK_RETURN] && tmp) tmp=0;
+            if (!keys[SDL_SCANCODE_RETURN] && tmp) tmp=0;
             break;
         case 22 :
-            if (keys[SDLK_RETURN] && !tmp) {
+            if (keys[SDL_SCANCODE_RETURN] && !tmp) {
                 mode = 0;
                 gpJeu->getAudio()->playSound(5);
                 SDL_Delay(2500);
                 gpJeu->teleporte(telep);
                 tmp=1;
             }
-            if (keys[SDLK_LEFT] && !tmp) {
+            if (keys[SDL_SCANCODE_LEFT] && !tmp) {
                 telep--; if (telep<0) telep=8;
                 gpJeu->getAudio()->playSound(3); tmp=1;}
-            if (keys[SDLK_RIGHT] && !tmp) {
+            if (keys[SDL_SCANCODE_RIGHT] && !tmp) {
                 telep++; if (telep>8) telep=0;
                 gpJeu->getAudio()->playSound(3); tmp=1;}
-            if ((keys[SDLK_1] || keys[SDLK_KP1]
-            || keys[SDLK_2] || keys[SDLK_KP2]
-            || keys[SDLK_3] || keys[SDLK_KP3]
-            || keys[SDLK_4] || keys[SDLK_KP4]
-            || keys[SDLK_5] || keys[SDLK_KP5]
-            || keys[SDLK_6] || keys[SDLK_KP6]
-            || keys[SDLK_7] || keys[SDLK_KP7]
-            || keys[SDLK_8] || keys[SDLK_KP8]
-            || keys[SDLK_9] || keys[SDLK_KP9]
+            if ((keys[SDL_SCANCODE_1] || keys[SDL_SCANCODE_KP_1]
+            || keys[SDL_SCANCODE_2] || keys[SDL_SCANCODE_KP_2]
+            || keys[SDL_SCANCODE_3] || keys[SDL_SCANCODE_KP_3]
+            || keys[SDL_SCANCODE_4] || keys[SDL_SCANCODE_KP_4]
+            || keys[SDL_SCANCODE_5] || keys[SDL_SCANCODE_KP_5]
+            || keys[SDL_SCANCODE_6] || keys[SDL_SCANCODE_KP_6]
+            || keys[SDL_SCANCODE_7] || keys[SDL_SCANCODE_KP_7]
+            || keys[SDL_SCANCODE_8] || keys[SDL_SCANCODE_KP_8]
+            || keys[SDL_SCANCODE_9] || keys[SDL_SCANCODE_KP_9]
             ) && !tmp) {
-                if (keys[SDLK_1] || keys[SDLK_KP1])telep=0;
-                if (keys[SDLK_2] || keys[SDLK_KP2])telep=1;
-                if (keys[SDLK_3] || keys[SDLK_KP3])telep=2;
-                if (keys[SDLK_4] || keys[SDLK_KP4])telep=3;
-                if (keys[SDLK_5] || keys[SDLK_KP5])telep=4;
-                if (keys[SDLK_6] || keys[SDLK_KP6])telep=5;
-                if (keys[SDLK_7] || keys[SDLK_KP7])telep=6;
-                if (keys[SDLK_8] || keys[SDLK_KP8])telep=7;
-                if (keys[SDLK_9] || keys[SDLK_KP9])telep=8;
+                if (keys[SDL_SCANCODE_1] || keys[SDL_SCANCODE_KP_1])telep=0;
+                if (keys[SDL_SCANCODE_2] || keys[SDL_SCANCODE_KP_2])telep=1;
+                if (keys[SDL_SCANCODE_3] || keys[SDL_SCANCODE_KP_3])telep=2;
+                if (keys[SDL_SCANCODE_4] || keys[SDL_SCANCODE_KP_4])telep=3;
+                if (keys[SDL_SCANCODE_5] || keys[SDL_SCANCODE_KP_5])telep=4;
+                if (keys[SDL_SCANCODE_6] || keys[SDL_SCANCODE_KP_6])telep=5;
+                if (keys[SDL_SCANCODE_7] || keys[SDL_SCANCODE_KP_7])telep=6;
+                if (keys[SDL_SCANCODE_8] || keys[SDL_SCANCODE_KP_8])telep=7;
+                if (keys[SDL_SCANCODE_9] || keys[SDL_SCANCODE_KP_9])telep=8;
                 gpJeu->getAudio()->playSound(3); tmp=1;
             }
             
-            if (!keys[SDLK_RETURN] && !keys[SDLK_LEFT] && !keys[SDLK_RIGHT] 
-            && !keys[SDLK_1] && !keys[SDLK_2] && !keys[SDLK_3]
-            && !keys[SDLK_4] && !keys[SDLK_5] && !keys[SDLK_6]
-            && !keys[SDLK_7] && !keys[SDLK_8] && !keys[SDLK_9]
-            && !keys[SDLK_KP1] && !keys[SDLK_KP2] && !keys[SDLK_KP3]
-            && !keys[SDLK_KP4] && !keys[SDLK_KP5] && !keys[SDLK_KP6]
-            && !keys[SDLK_KP7] && !keys[SDLK_KP8] && !keys[SDLK_KP9]
+            if (!keys[SDL_SCANCODE_RETURN] && !keys[SDL_SCANCODE_LEFT] && !keys[SDL_SCANCODE_RIGHT]
+            && !keys[SDL_SCANCODE_1] && !keys[SDL_SCANCODE_2] && !keys[SDL_SCANCODE_3]
+            && !keys[SDL_SCANCODE_4] && !keys[SDL_SCANCODE_5] && !keys[SDL_SCANCODE_6]
+            && !keys[SDL_SCANCODE_7] && !keys[SDL_SCANCODE_8] && !keys[SDL_SCANCODE_9]
+            && !keys[SDL_SCANCODE_KP_1] && !keys[SDL_SCANCODE_KP_2] && !keys[SDL_SCANCODE_KP_3]
+            && !keys[SDL_SCANCODE_KP_4] && !keys[SDL_SCANCODE_KP_5] && !keys[SDL_SCANCODE_KP_6]
+            && !keys[SDL_SCANCODE_KP_7] && !keys[SDL_SCANCODE_KP_8] && !keys[SDL_SCANCODE_KP_9]
             && tmp) tmp=0;
             break;
     }

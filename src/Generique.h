@@ -11,7 +11,7 @@
 #ifndef __GENERIQUE_H__
 #define __GENERIQUE_H__
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 class Jeu;
 

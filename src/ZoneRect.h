@@ -11,7 +11,7 @@
 #ifndef __ZONERECT_H__
 #define __ZONERECT_H__
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include "Listable.h"
 
