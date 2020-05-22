@@ -91,7 +91,7 @@ int Keyboard::gererClavier() {
 }
 
 void Keyboard::toggleFullScreen() {
-    gFullScreen = (gFullScreen ? 0 : SDL_WINDOW_FULLSCREEN);
+    gFullScreen = (gFullScreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
     gFullScreen ? SDL_ShowCursor(SDL_DISABLE) : SDL_ShowCursor(SDL_ENABLE);
     SDL_SetWindowFullscreen(gpWindow, gFullScreen);
 }
