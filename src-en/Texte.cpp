@@ -605,9 +605,9 @@ void Texte::chercheText() {
         case 394 : texte = "As Oni-Link, you cannot use objects, but you can teleport yourself to the entry when you are in a dungeon by pressing T."; idsuiv=395; break;
         case 395 : texte = "Each time Oni-Link defeats an enemy, your gauge decreases. When it's empty, Link regain his normal form."; break;
         case 396 : texte = "Team leader, creator and programmer :                                                                         Vincent Jouillat"; break;
-        case 397 : texte = "Scriptwriter and translator:                                                                                      LobalÃ¹z"; break;
+        case 397 : texte = "Scriptwriter and translator:                                                                                      Lobalùz"; break;
         case 398 : texte = "Help to the Graphics :                                                                                          Harvestland"; break;
-        case 399 : texte = "Help to the Graphics :                                                                                        SolÃ¨ne Jouillat"; break;
+        case 399 : texte = "Help to the Graphics :                                                                                        Solène Jouillat"; break;
         case 400 : texte = "Illustrator :                                                                                                      Raiden"; break;
         case 401 : texte = "You find the Termina map!!!**Press P when you are outside to see it."; break;
         case 402 : texte = "The legend forgets that after these events, the hero was brought down by a terrible curse..."; idsuiv=403; break;
@@ -732,22 +732,22 @@ void Texte::setTexte(int idTxt, int vx, int vy, int vw, int vh, bool cadr, bool 
 }
 
 void Texte::decoupeText() {
-    //compte le nombre de caractÃ¨res possibles et largeur et en hauteur
+    //compte le nombre de caractères possibles et largeur et en hauteur
     int nbcol = (w-16)/6 -1;
     int nblig = (h-16)/16;
     int tailleMax = nbcol * nblig;
     int taille;
     
-    //parcours du texte Ã  afficher; Ã  chaque dÃ©but de mot, 
-    //vÃ©rifie que le mot peut tenir sur la ligne
+    //parcours du texte à afficher; à chaque début de mot, 
+    //vérifie que le mot peut tenir sur la ligne
     for (int i = 0; i < (int)texte.length(); i++) {
         
-        //supprime les espaces isolÃ©s en dÃ©but de ligne
+        //supprime les espaces isolés en début de ligne
         if (texte.at(i)==' ' && texte.at(i+1)!=' ' && i%nbcol == 0) texte.erase(i,1);
-        //recherche du dÃ©but du prochain mot
+        //recherche du début du prochain mot
         while(texte.at(i)==' ' && i < (int)texte.length()-1) i++;
         
-        //saute une ligne si trouve une Ã©toile
+        //saute une ligne si trouve une étoile
         if (texte.at(i)=='*') {
             texte.erase(i,1);//replace(i, 1, " ");
             int nb = (nbcol)-(i%(nbcol));
@@ -755,7 +755,7 @@ void Texte::decoupeText() {
             continue;
         }
         
-        //si le mot dÃ©passe
+        //si le mot dépasse
         taille = tailleMot(i);
         if ((i%nbcol)+taille>nbcol) {
             if  (i < tailleMax) {
@@ -764,7 +764,7 @@ void Texte::decoupeText() {
                     texte.insert(((i/nbcol)+1)*nbcol-1,"--");
                     i = 1+((i/nbcol)+1)*nbcol;
                 }
-                //sinon, on ajoute des espaces pour faire commencer le mot Ã  la ligne
+                //sinon, on ajoute des espaces pour faire commencer le mot à la ligne
                 else while((i%nbcol) != 0) {texte.insert(i," "); i++;}
             }
         }
@@ -813,35 +813,35 @@ void Texte::afficheLettre(SDL_Surface* gpScreen, char c, int vx, int vy) {
             
     //majuscules A-Z
     if(val>=65 && val<=90) {src.x=6+16*((val-65)%10); src.y=2+16*((val-65)/10);}   
-    // Ã§
+    // ç
     if(val==-25) {src.x=148;src.y=34;}
-    // Ã©
+    // é
     if(val==-23) {src.x=100;src.y=84;}
-    // Ãª
+    // ê
     if(val==-22) {src.x=116;src.y=84;}
-    // Ã¨
+    // è
     if(val==-24) {src.x=132;src.y=84;}
-    // Ã«
+    // ë
     if(val==-21) {src.x=132;src.y=151;}
-    // Ã 
+    // à
     if(val==-32) {src.x=148;src.y=84;}
-    // Ã¢
+    // â
     if(val==-30) {src.x=148;src.y=103;}
-    // Ã¤
+    // ä
     if(val==-28) {src.x=148;src.y=135;}
-    // Ã®
+    // î
     if(val==-18) {src.x=84;src.y=119;}
-    // Ã¯
+    // ï
     if(val==-17) {src.x=116;src.y=151;}
-    // Ã»
+    // û
     if(val==-5) {src.x=84;src.y=103;}
-    // Ã¹
+    // ù
     if(val==-7) {src.x=148;src.y=151;}
-    // Ã¼
+    // ü
     if(val==-4) {src.x=116;src.y=135;}
-    // Ã¶
+    // ö
     if(val==-10) {src.x=132;src.y=135;}
-    // Ã´
+    // ô
     if(val==-12) {src.x=148;src.y=119;}
             
     //ponctuation

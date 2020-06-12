@@ -415,12 +415,12 @@ void Menu::drawStatut(SDL_Surface* gpScreen) {
     int i = 36;
     if (!gpJoueur->hasObjet(O_LANTERNE) || !gpJoueur->getOnilink()) i+=8;
     
-    gpJeu->affiche(gpScreen, "STATUS :", 148,20-dec);
+    gpJeu->affiche(gpScreen, "ESTATUTO :", 148,20-dec);
     int v = gpJoueur->getVie();
     int vm = gpJoueur->getVieMax();
     if (v < 10) oss<<"0"; oss << v << "/";
     if (vm < 10) oss<<"0"; oss << vm;
-    gpJeu->affiche(gpScreen, "LIFE      : " + oss.str(), 148,i-dec);
+    gpJeu->affiche(gpScreen, "VIDA       : " + oss.str(), 148,i-dec);
     i+=16;
     
     
@@ -430,7 +430,7 @@ void Menu::drawStatut(SDL_Surface* gpScreen) {
         int mm = gpJoueur->getMagieMax();
         if (m < 10) oss<<"0"; oss << m << "/";
         if (mm < 10) oss<<"0"; oss << mm;
-        gpJeu->affiche(gpScreen, "MAGIC     : " + oss.str(), 148,i-dec);
+        gpJeu->affiche(gpScreen, "MAGIA     : " + oss.str(), 148,i-dec);
         i+=16;
     }
     
@@ -446,11 +446,11 @@ void Menu::drawStatut(SDL_Surface* gpScreen) {
     
     oss.str("");
     oss << gpJoueur->getForce();
-    gpJeu->affiche(gpScreen, "STRENGHT  : " + oss.str(), 148,i-dec);
+    gpJeu->affiche(gpScreen, "FUERZA     : " + oss.str(), 148,i-dec);
     i+=16;
     oss.str("");
     oss << gpJoueur->getDefense();
-    gpJeu->affiche(gpScreen, "DEFENSE   : " + oss.str(), 148,i-dec);
+    gpJeu->affiche(gpScreen, "DEFENSA   : " + oss.str(), 148,i-dec);
     i+=16;
     oss.str("");
     int h = gpJoueur->getTemps(2);
@@ -459,14 +459,14 @@ void Menu::drawStatut(SDL_Surface* gpScreen) {
     if (h < 10) oss<<"0"; oss << h << ":";
     if (m < 10) oss<<"0"; oss << m << ":";
     if (s < 10) oss<<"0"; oss << s;
-    gpJeu->affiche(gpScreen, "TIME      : " + oss.str(), 148,i-dec);
+    gpJeu->affiche(gpScreen, "TIEMPO     : " + oss.str(), 148,i-dec);
 
     SDL_Rect src;
     SDL_Rect dst;
     
     src.y=0; src.w=16; src.h=16; dst.y=136-dec;
     
-    //Ã©pÃ©e
+    //épée
     if (gpJoueur->getEpee()) {
         src.x = 16 * (gpJoueur->getEpee()-1); dst.x=156;
         if (gpJoueur->getOni()) {
